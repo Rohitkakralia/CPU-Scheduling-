@@ -1,7 +1,7 @@
-package com.mongoDb.MongoDb.services;
+package com.CPUScheduling.CPUScheduling.services;
 
-import com.mongoDb.MongoDb.entities.User;
-import com.mongoDb.MongoDb.repository.UserRepository;
+import com.CPUScheduling.CPUScheduling.entities.User;
+import com.CPUScheduling.CPUScheduling.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

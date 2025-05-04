@@ -1,4 +1,4 @@
-package com.mongoDb.MongoDb.entities;
+package com.CPUScheduling.CPUScheduling.entities;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

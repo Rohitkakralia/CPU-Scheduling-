@@ -1,9 +1,9 @@
-package com.mongoDb.MongoDb.services;
+package com.CPUScheduling.CPUScheduling.services;
 
-import com.mongoDb.MongoDb.entities.Process;
-import com.mongoDb.MongoDb.entities.ScheduleResult;
+
+import com.CPUScheduling.CPUScheduling.entities.ScheduleResult;
 import org.springframework.stereotype.Service;
-
+import com.CPUScheduling.CPUScheduling.entities.Process;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

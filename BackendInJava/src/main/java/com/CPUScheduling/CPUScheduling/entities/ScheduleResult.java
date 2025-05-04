@@ -1,4 +1,4 @@
-package com.mongoDb.MongoDb.entities;
+package com.CPUScheduling.CPUScheduling.entities;
 
 public class ScheduleResult {
     private int criticalTime;

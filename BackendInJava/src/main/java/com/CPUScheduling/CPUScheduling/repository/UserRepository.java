@@ -1,6 +1,6 @@
-package com.mongoDb.MongoDb.repository;
+package com.CPUScheduling.CPUScheduling.repository;
 
-import com.mongoDb.MongoDb.entities.User;
+import com.CPUScheduling.CPUScheduling.entities.User;
 import com.mongodb.client.MongoDatabase;
 import org.springframework.data.mongodb.core.MongoAdminOperations;
 import org.springframework.data.mongodb.repository.MongoRepository;

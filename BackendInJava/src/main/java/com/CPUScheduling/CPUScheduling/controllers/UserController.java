@@ -1,7 +1,7 @@
-package com.mongoDb.MongoDb.controllers;
+package com.CPUScheduling.CPUScheduling.controllers;
 
-import com.mongoDb.MongoDb.entities.User;
-import com.mongoDb.MongoDb.services.UserServices;
+import com.CPUScheduling.CPUScheduling.entities.User;
+import com.CPUScheduling.CPUScheduling.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
