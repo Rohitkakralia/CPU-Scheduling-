@@ -1,13 +1,11 @@
 package com.CPUScheduling.CPUScheduling.services;
 
-
 import com.CPUScheduling.CPUScheduling.entities.ScheduleResult;
-import org.springframework.stereotype.Service;
+import com.CPUScheduling.CPUScheduling.entities.GantChart;
 import com.CPUScheduling.CPUScheduling.entities.Process;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class SchedulerService {
@@ -82,6 +80,7 @@ public class SchedulerService {
 
         // Execute the scheduling algorithm
         List<ScheduleResult> results = new ArrayList<>();
+        List<GantChart> ganttChart = new ArrayList<>();
         int currentTime = 0;
 
         while (!processQueue.isEmpty()) {
@@ -91,14 +90,19 @@ public class SchedulerService {
             int arrivalTime = details[0];
             int burstTime = details[1];
 
-            // If process hasn't arrived yet, wait for it
+            // If process hasn't arrived yet, wait for it (record idle time)
             if (currentTime < arrivalTime) {
+                ganttChart.add(new GantChart("IDLE", currentTime, arrivalTime));
                 currentTime = arrivalTime;
             }
 
+            int startTime = currentTime;
             int completionTime = currentTime + burstTime;
             int turnaroundTime = completionTime - arrivalTime;
             int waitingTime = turnaroundTime - burstTime;
+
+            // Record process execution in Gantt chart
+            ganttChart.add(new GantChart(processId, startTime, completionTime));
 
             // Update the current time
             currentTime = completionTime;
@@ -111,6 +115,7 @@ public class SchedulerService {
             result.setCriticalTime(completionTime);
             result.setTurnAroundTime(turnaroundTime);
             result.setWaitingTime(waitingTime);
+            result.setSequence(new ArrayList<>(ganttChart));
 
             results.add(result);
 
@@ -121,7 +126,18 @@ public class SchedulerService {
                     ", WT: " + waitingTime);
         }
 
+        // Print Gantt chart
+        printGanttChart(ganttChart);
+
         System.out.println("FCFS scheduling completed.");
         return results;
+    }
+
+    private void printGanttChart(List<GantChart> ganttChart) {
+        System.out.println("\nGantt Chart:");
+        System.out.println("Process\tStart\tEnd");
+        for (GantChart entry : ganttChart) {
+            System.out.println(entry.processId + "\t" + entry.startTime + "\t" + entry.endTime);
+        }
     }
 }

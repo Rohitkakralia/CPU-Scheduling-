@@ -2,7 +2,7 @@
 # FCFS Scheduling API (Spring Boot + MongoDB)
 
 This project implements a **First Come First Serve (FCFS)** CPU scheduling algorithm using **Spring Boot** and **MongoDB**. It provides a RESTful API to compute scheduling metrics such as **Completion Time**, **Waiting Time**, and **Turnaround Time** for a list of processes.
-
+ 
 ---
 
 ## 🔧 Tech Stack

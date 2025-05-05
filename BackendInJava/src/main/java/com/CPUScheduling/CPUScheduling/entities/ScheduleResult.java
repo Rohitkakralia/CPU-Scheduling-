@@ -1,5 +1,7 @@
 package com.CPUScheduling.CPUScheduling.entities;
 
+import java.util.List;
+
 public class ScheduleResult {
     private int criticalTime;
     private int arivalTime;
@@ -7,6 +9,15 @@ public class ScheduleResult {
     private String name;
     private int turnAroundTime;
     private int waitingTime;
+    private List<GantChart> sequence;
+
+    public List<GantChart> getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(List<GantChart> sequence) {
+        this.sequence = sequence;
+    }
 
     public int getCriticalTime() {
         return criticalTime;

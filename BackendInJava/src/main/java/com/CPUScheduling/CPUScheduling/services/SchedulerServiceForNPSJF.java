@@ -2,6 +2,7 @@ package com.CPUScheduling.CPUScheduling.services;
 
 import com.CPUScheduling.CPUScheduling.entities.Process;
 import com.CPUScheduling.CPUScheduling.entities.ScheduleResult;
+import com.CPUScheduling.CPUScheduling.entities.GantChart;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -71,6 +72,7 @@ public class SchedulerServiceForNPSJF {
         }
 
         List<ScheduleResult> results = new ArrayList<>();
+        List<GantChart> ganttChart = new ArrayList<>();
         int currentTime = 0;
 
         while(!initialQueue.isEmpty() || !arrivalQueue.isEmpty()) {
@@ -88,7 +90,12 @@ public class SchedulerServiceForNPSJF {
             // If no processes have arrived yet, fast-forward time to next arrival
             if (arrivalQueue.isEmpty() && !initialQueue.isEmpty()) {
                 String nextProcess = initialQueue.peek();
-                currentTime = processToAllDetails.get(nextProcess)[0];
+                int nextArrivalTime = processToAllDetails.get(nextProcess)[0];
+                if (currentTime < nextArrivalTime) {
+                    // Record idle time in Gantt chart
+                    ganttChart.add(new GantChart("IDLE", currentTime, nextArrivalTime));
+                    currentTime = nextArrivalTime;
+                }
                 continue;
             }
 
@@ -105,8 +112,12 @@ public class SchedulerServiceForNPSJF {
             int arrivalTime = details[0];
             int burstTime = details[1];
 
-            // Calculate metrics
+            // Record process execution in Gantt chart
+            int startTime = currentTime;
             int completionTime = currentTime + burstTime;
+            ganttChart.add(new GantChart(currentProcess, startTime, completionTime));
+
+            // Calculate metrics
             int turnaroundTime = completionTime - arrivalTime;
             int waitingTime = turnaroundTime - burstTime;
 
@@ -124,6 +135,7 @@ public class SchedulerServiceForNPSJF {
             result.setCriticalTime(completionTime);
             result.setTurnAroundTime(turnaroundTime);
             result.setWaitingTime(waitingTime);
+            result.setSequence(new ArrayList<>(ganttChart));
 
             results.add(result);
 
@@ -134,6 +146,17 @@ public class SchedulerServiceForNPSJF {
                     ", WT: " + waitingTime);
         }
 
+        // Print Gantt chart
+        printGanttChart(ganttChart);
+
         return results;
+    }
+
+    private void printGanttChart(List<GantChart> ganttChart) {
+        System.out.println("\nGantt Chart:");
+        System.out.println("Process\tStart\tEnd");
+        for (GantChart entry : ganttChart) {
+            System.out.println(entry.processId + "\t" + entry.startTime + "\t" + entry.endTime);
+        }
     }
 }

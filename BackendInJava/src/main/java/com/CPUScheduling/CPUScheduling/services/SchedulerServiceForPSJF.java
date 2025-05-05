@@ -2,6 +2,7 @@ package com.CPUScheduling.CPUScheduling.services;
 
 import com.CPUScheduling.CPUScheduling.entities.ScheduleResult;
 import com.CPUScheduling.CPUScheduling.entities.Process;
+import com.CPUScheduling.CPUScheduling.entities.GantChart;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -47,9 +48,11 @@ public class SchedulerServiceForPSJF {
         });
 
         List<ScheduleResult> results = new ArrayList<>();
+        List<GantChart> ganttChart = new ArrayList<>();
         int currentTime = 0;
         String currentProcess = null;
         int totalProcesses = processMap.size();
+        int lastProcessChangeTime = 0;
 
         System.out.println("Starting PSJF Scheduling:");
         printProcessDetails(processMap);
@@ -75,15 +78,18 @@ public class SchedulerServiceForPSJF {
                 if (currentProcess == null ||
                         (currentState != null && shortestState.remainingTime < currentState.remainingTime)) {
 
-                    // Preempt current process if needed
+                    // Record the execution of the previous process in Gantt chart
                     if (currentProcess != null) {
+                        ganttChart.add(new GantChart(currentProcess, lastProcessChangeTime, currentTime));
                         readyQueue.add(currentProcess);
                         System.out.println("Time " + currentTime + ": Preempting " + currentProcess +
                                 " for " + shortestJob);
                     }
 
+                    // Update the current process and record the start time
                     currentProcess = shortestJob;
                     readyQueue.remove(shortestJob);
+                    lastProcessChangeTime = currentTime;
 
                     // Mark start time if this is first execution
                     if (processMap.get(currentProcess).startTime == -1) {
@@ -105,6 +111,9 @@ public class SchedulerServiceForPSJF {
                     int turnaroundTime = completionTime - ps.arrivalTime;
                     int waitingTime = turnaroundTime - ps.burstTime;
 
+                    // Add the final execution segment to Gantt chart
+                    ganttChart.add(new GantChart(currentProcess, lastProcessChangeTime, completionTime));
+
                     ScheduleResult result = new ScheduleResult();
                     result.setName(currentProcess);
                     result.setArivalTime(ps.arrivalTime);
@@ -120,6 +129,7 @@ public class SchedulerServiceForPSJF {
                             ", WT: " + waitingTime + ")");
 
                     currentProcess = null;
+                    lastProcessChangeTime = completionTime;
                 }
             } else {
                 System.out.println("Time " + currentTime + ": CPU idle");
@@ -128,8 +138,14 @@ public class SchedulerServiceForPSJF {
             currentTime++;
         }
 
+        // Assign Gantt chart to each result
+        for (ScheduleResult result : results) {
+            result.setSequence(new ArrayList<>(ganttChart));
+        }
+
         // Calculate and print averages
         printAverages(results);
+        printGanttChart(ganttChart);
 
         return results;
     }
@@ -151,5 +167,13 @@ public class SchedulerServiceForPSJF {
 
         System.out.println("\nAverage Turnaround Time: " + String.format("%.2f", avgTAT));
         System.out.println("Average Waiting Time: " + String.format("%.2f", avgWT));
+    }
+
+    private void printGanttChart(List<GantChart> ganttChart) {
+        System.out.println("\nGantt Chart:");
+        System.out.println("Process\tStart\tEnd");
+        for (GantChart entry : ganttChart) {
+            System.out.println(entry.processId + "\t" + entry.startTime + "\t" + entry.endTime);
+        }
     }
 }
