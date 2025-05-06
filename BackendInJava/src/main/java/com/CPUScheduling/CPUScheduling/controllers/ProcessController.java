@@ -5,6 +5,7 @@ import com.CPUScheduling.CPUScheduling.services.SchedulerService;
 import com.CPUScheduling.CPUScheduling.services.SchedulerServiceForNPSJF;
 import com.CPUScheduling.CPUScheduling.services.SchedulerServiceForPSJF;
 import com.CPUScheduling.CPUScheduling.entities.Process;
+import com.CPUScheduling.CPUScheduling.services.SchedulerServiceForRR;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,8 @@ public class ProcessController {
     private SchedulerServiceForNPSJF schedulerServiceForNPSJF;
     @Autowired
     private SchedulerServiceForPSJF schedulerServiceForPSJF;
+    @Autowired
+    private SchedulerServiceForRR schedulerServiceForRR;
 
     @PostMapping("/fcfs")
     public ResponseEntity<List<ScheduleResult>> runFCFS(@RequestBody List<Process> processes) {
@@ -53,4 +56,15 @@ public class ProcessController {
         }
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("rr")
+    public ResponseEntity<List<ScheduleResult>> runRR(@RequestBody List<Process> processes){
+        result = schedulerServiceForRR.runRR(processes);
+        System.out.println("FCFS Scheduling Result:");
+        for (ScheduleResult r : result) {
+            System.out.println(r);
+        }
+        return ResponseEntity.ok(result);
+    }
 }
+

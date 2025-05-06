@@ -80,38 +80,50 @@ export default function HomePage() {
     };
   };
 
-  const generateGanttData = (results) => {
-    if (!results || results.length === 0) return [];
-    
-    const sortedResults = [...results].sort((a, b) => a.criticalTime - b.criticalTime);
-    
-    let ganttData = [];
-    let prevTime = 0;
-    
-    sortedResults.forEach(proc => {
-      if (proc.arivalTime > prevTime) {
-        ganttData.push({
-          processId: 'Idle',
-          start: prevTime,
-          end: proc.arivalTime
-        });
-        prevTime = proc.arivalTime;
-      }
+  
+  const generateGanttData = (results, selectedAlgo) => {
+    if (selectedAlgo === 'P-SJF' || selectedAlgo === 'RR') {
+      if (!results || results.length === 0 || !results[0].sequence) return [];
       
-      ganttData.push({
-        processId: proc.name,
-        start: prevTime,
-        end: proc.criticalTime
+      return results[0].sequence.map(item => ({
+        processId: item.processId,
+        start: item.startTime,
+        end: item.endTime,
+        duration: item.endTime - item.startTime
+      }));
+    } else {
+      if (!results || results.length === 0) return [];
+      
+      const sortedResults = [...results].sort((a, b) => a.criticalTime - b.criticalTime);
+      
+      let ganttData = [];
+      let prevTime = 0;
+      
+      sortedResults.forEach(proc => {
+        if (proc.arivalTime > prevTime) {
+          ganttData.push({
+            processId: 'Idle',
+            start: prevTime,
+            end: proc.arivalTime
+          });
+          prevTime = proc.arivalTime;
+        }
+        
+        ganttData.push({
+          processId: proc.name,
+          start: prevTime,
+          end: proc.criticalTime
+        });
+        
+        prevTime = proc.criticalTime;
       });
       
-      prevTime = proc.criticalTime;
-    });
-    
-    return ganttData;
+      return ganttData;
+    }
   };
-
+  
   const averages = results ? calculateAverages(results) : null;
-  const ganttData = results ? generateGanttData(results) : [];
+  const ganttData = results ? generateGanttData(results, selectedAlgo) : [];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 to-purple-800 text-white">
