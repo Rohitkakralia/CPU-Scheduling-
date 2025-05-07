@@ -117,11 +117,8 @@ LinkedIn:https://www.linkedin.com/in/rohit-kakralia-a35046251/
 
 GitHub:https://github.com/Rohitkakralia
 
-📄 License
-This project is licensed under the MIT License.
 
 ---
 
-Would you like me to generate this as a downloadable file or help you include setup instructions for MongoDB as well?
 
              
