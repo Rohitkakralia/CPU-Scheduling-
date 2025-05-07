@@ -7,9 +7,10 @@ export default function HomePage() {
   const [formData, setFormData] = useState({
     processId: '',
     arrivalTime: '',
-    burstTime: ''
+    burstTime: '',
   });
   const [selectedAlgo, setSelectedAlgo] = useState('');
+  const [timeQuantum, setTimeQuantum] = useState('');
   const [results, setResults] = useState(null);
   const [activeTab, setActiveTab] = useState('input'); // 'input' or 'results'
 
@@ -18,9 +19,8 @@ export default function HomePage() {
     { value: 'RR', name: 'Round Robin (RR)' },
     { value: 'NP-SJF', name: 'Non-Primitive Shortest Job First(NP-SJF)' },
     { value: 'P-SJF', name: 'Primitive Shortest Job First(P-SJF)' },
-    { value: 'HRRN', name: 'Highest Response Ratio Next (HRRN)' },
-    { value: 'FB', name: 'Feedback (FB)' },
-    { value: 'Aging', name: 'Aging' }
+    { value: 'NP-PS', name: 'Priority (Non-Primitive)' },
+    { value: 'P-PS', name: 'Priority (Primitive)' }
   ];
 
   const handleAddProcess = () => {
@@ -41,10 +41,15 @@ export default function HomePage() {
     }
 
     try {
+      const requestBody = {
+        processes: processes,
+        timeQuantum: selectedAlgo === 'RR' ? parseInt(timeQuantum) : undefined
+      };
+
       const response = await fetch(`http://localhost:8080/api/scheduler/${selectedAlgo.toLowerCase()}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(processes)
+        body: JSON.stringify(requestBody)
       });
 
       const result = await response.json();
@@ -213,6 +218,34 @@ export default function HomePage() {
                 ))}
               </select>
             </div>
+
+            {selectedAlgo === 'RR' ? (
+              <div>
+              <label className="block text-sm mt-3 font-medium text-purple-100 mb-1">Time Quantum</label>
+              <input
+                type="number"
+                value={timeQuantum}
+                onChange={(e) => setTimeQuantum(e.target.value )}
+                className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+                placeholder="Time Quantum"
+                min="1"
+              />
+            </div>
+            ) : (
+              <div 
+                   className='pointer-events-none opacity-50 cursor-not-allowed'
+                >
+              <label className="block text-sm mt-3 font-medium text-purple-100 mb-1">Time Quantum</label>
+              <input
+                type="number"
+                value={timeQuantum}
+                onChange={(e) => setTimeQuantum(e.target.value )}
+                className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+                placeholder="Time Quantum"
+                min="1"
+              />
+            </div>
+            )}
 
             <div className="mt-8 space-y-3">
               <button

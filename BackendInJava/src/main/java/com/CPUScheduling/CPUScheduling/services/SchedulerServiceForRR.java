@@ -137,7 +137,7 @@ public class SchedulerServiceForRR {
         }
     }
 
-    public List<ScheduleResult> runRR(List<Process> processes) {
+    public List<ScheduleResult> runRR(List<Process> processes, Integer timeQuantum) {
         // Reset data structures
         HashMap<String, ProcessState> processToDetails = new HashMap<>();
 
@@ -156,7 +156,6 @@ public class SchedulerServiceForRR {
             }
         }
 
-        int timeQuantum = 4;
         int currentTime = 0;
         List<ScheduleResult> results = new ArrayList<>();
         List<GantChart> ganttChart = new ArrayList<>();
