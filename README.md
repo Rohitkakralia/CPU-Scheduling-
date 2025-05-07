@@ -111,7 +111,7 @@ Add database persistence for scheduled results
 Add frontend UI for interaction
 
 🧑‍💻 Author
-Your Name
+Rohit kakralia
 
 LinkedIn:https://www.linkedin.com/in/rohit-kakralia-a35046251/
 
