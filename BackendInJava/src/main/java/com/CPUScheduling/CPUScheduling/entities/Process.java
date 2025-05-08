@@ -4,7 +4,7 @@ public class Process {
     private String processId;
     private int arrivalTime;  // Note the spelling: arrival not arival
     private int burstTime;
-    private int timeQuantum;
+    private int priority;
 
     // Constructors
     public Process() {}
@@ -40,11 +40,11 @@ public class Process {
         this.burstTime = burstTime;
     }
 
-    public int getTimeQuantum() {
-        return timeQuantum;
+    public int getPriority() {
+        return priority;
     }
 
-    public void setTimeQuantum(int timeQuantum) {
-        this.timeQuantum = timeQuantum;
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }

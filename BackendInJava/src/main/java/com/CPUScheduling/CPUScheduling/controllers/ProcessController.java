@@ -1,11 +1,8 @@
 package com.CPUScheduling.CPUScheduling.controllers;
 
 import com.CPUScheduling.CPUScheduling.entities.ScheduleResult;
-import com.CPUScheduling.CPUScheduling.services.SchedulerService;
-import com.CPUScheduling.CPUScheduling.services.SchedulerServiceForNPSJF;
-import com.CPUScheduling.CPUScheduling.services.SchedulerServiceForPSJF;
+import com.CPUScheduling.CPUScheduling.services.*;
 import com.CPUScheduling.CPUScheduling.entities.Process;
-import com.CPUScheduling.CPUScheduling.services.SchedulerServiceForRR;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +23,8 @@ public class ProcessController {
     private SchedulerServiceForPSJF schedulerServiceForPSJF;
     @Autowired
     private SchedulerServiceForRR schedulerServiceForRR;
+    @Autowired
+    private SchedulerServiceForNPPS schedulerServiceForNPPS;
 
     // Create a DTO class to represent the request body
     public static class SchedulingRequest {
@@ -84,6 +83,17 @@ public class ProcessController {
     public ResponseEntity<List<ScheduleResult>> runRR(@RequestBody SchedulingRequest request){
         // Pass the timeQuantum to the RR service
         result = schedulerServiceForRR.runRR(request.getProcesses(), request.getTimeQuantum());
+        System.out.println("RR Scheduling Result:");
+        for (ScheduleResult r : result) {
+            System.out.println(r);
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("np-ps")
+    public ResponseEntity<List<ScheduleResult>> runNPPS(@RequestBody SchedulingRequest request){
+        // Pass the timeQuantum to the RR service
+        result = schedulerServiceForNPPS.runNPPS(request.getProcesses());
         System.out.println("RR Scheduling Result:");
         for (ScheduleResult r : result) {
             System.out.println(r);

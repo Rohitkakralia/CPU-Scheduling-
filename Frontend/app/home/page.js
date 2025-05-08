@@ -8,6 +8,7 @@ export default function HomePage() {
     processId: '',
     arrivalTime: '',
     burstTime: '',
+    priority: ''
   });
   const [selectedAlgo, setSelectedAlgo] = useState('');
   const [timeQuantum, setTimeQuantum] = useState('');
@@ -25,12 +26,22 @@ export default function HomePage() {
 
   const handleAddProcess = () => {
     if (formData.processId && formData.arrivalTime !== '' && formData.burstTime !== '') {
-      setProcesses([...processes, {
+      const newProcess = {
         processId: formData.processId,
         arrivalTime: parseInt(formData.arrivalTime),
         burstTime: parseInt(formData.burstTime)
-      }]);
-      setFormData({ processId: '', arrivalTime: '', burstTime: '' });
+      };
+
+      if ((selectedAlgo === 'NP-PS' || selectedAlgo === 'P-PS')) {
+        if (formData.priority === '' || isNaN(parseInt(formData.priority))) {
+          alert('Please enter a valid priority value');
+          return;
+        }
+        newProcess.priority = parseInt(formData.priority);
+      }
+
+      setProcesses([...processes, newProcess]);
+      setFormData({ processId: '', arrivalTime: '', burstTime: '', priority: '' });
     }
   };
 
@@ -145,7 +156,28 @@ export default function HomePage() {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left Panel - Input Section */}
           <div className="lg:w-1/3 bg-white/10 backdrop-blur-md rounded-xl shadow-2xl p-6 border border-white/20">
-            <h2 className="text-2xl font-semibold mb-6 text-amber-300 flex items-center">
+
+          <div className="mt-8">
+              <h3 className="text-xl font-semibold mb-4 text-amber-300 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Scheduling Algorithm
+              </h3>
+              
+              <select
+                value={selectedAlgo}
+                onChange={(e) => setSelectedAlgo(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-400 transition appearance-none"
+              >
+                <option value="" disabled className="bg-purple-900">Select Algorithm</option>
+                {schedulingAlgorithms.map((algo, index) => (
+                  <option key={index} value={algo.value} className="bg-purple-900">{algo.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <h2 className="text-2xl font-semibold mt-3.5 mb-6 text-amber-300 flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
@@ -188,6 +220,35 @@ export default function HomePage() {
                 />
               </div>
 
+              {selectedAlgo === 'NP-PS' || selectedAlgo === 'P-PS' ? (
+                <div>
+                  <label className="block text-sm font-medium text-purple-100 mb-1">Priority</label>
+                  <input
+                    type="number"
+                    value={formData.priority}
+                    onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+                    placeholder="1"
+                    min="1"
+                  />
+                </div>
+              ) : null}
+
+              {selectedAlgo === 'RR' ? (
+              <div>
+              <label className="block text-sm mt-3 font-medium text-purple-100 mb-1">Time Quantum</label>
+              <input
+                type="number"
+                value={timeQuantum}
+                onChange={(e) => setTimeQuantum(e.target.value )}
+                className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+                placeholder="Time Quantum"
+                min="1"
+                />
+              </div>
+              ) : null}
+            
+
               <button
                 onClick={handleAddProcess}
                 className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg font-medium hover:from-amber-600 hover:to-amber-700 transition-all shadow-lg hover:shadow-amber-500/30 flex items-center justify-center"
@@ -198,54 +259,6 @@ export default function HomePage() {
                 Add Process
               </button>
             </div>
-
-            <div className="mt-8">
-              <h3 className="text-xl font-semibold mb-4 text-amber-300 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                Scheduling Algorithm
-              </h3>
-              
-              <select
-                value={selectedAlgo}
-                onChange={(e) => setSelectedAlgo(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-400 transition appearance-none"
-              >
-                <option value="" disabled className="bg-purple-900">Select Algorithm</option>
-                {schedulingAlgorithms.map((algo, index) => (
-                  <option key={index} value={algo.value} className="bg-purple-900">{algo.name}</option>
-                ))}
-              </select>
-            </div>
-
-            {selectedAlgo === 'RR' ? (
-              <div>
-              <label className="block text-sm mt-3 font-medium text-purple-100 mb-1">Time Quantum</label>
-              <input
-                type="number"
-                value={timeQuantum}
-                onChange={(e) => setTimeQuantum(e.target.value )}
-                className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
-                placeholder="Time Quantum"
-                min="1"
-              />
-            </div>
-            ) : (
-              <div 
-                   className='pointer-events-none opacity-50 cursor-not-allowed'
-                >
-              <label className="block text-sm mt-3 font-medium text-purple-100 mb-1">Time Quantum</label>
-              <input
-                type="number"
-                value={timeQuantum}
-                onChange={(e) => setTimeQuantum(e.target.value )}
-                className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
-                placeholder="Time Quantum"
-                min="1"
-              />
-            </div>
-            )}
 
             <div className="mt-8 space-y-3">
               <button
@@ -304,6 +317,9 @@ export default function HomePage() {
                           <th className="px-4 py-3 text-left rounded-tl-lg">Process ID</th>
                           <th className="px-4 py-3 text-left">Arrival Time</th>
                           <th className="px-4 py-3 text-left">Burst Time</th>
+                          {selectedAlgo === 'NP-PS' || selectedAlgo === 'P-PS' ? (
+                            <th className="px-4 py-3 text-left">Priority</th>
+                          ) : null}
                           <th className="px-4 py-3 text-right rounded-tr-lg">Actions</th>
                         </tr>
                       </thead>
@@ -313,6 +329,9 @@ export default function HomePage() {
                             <td className="px-4 py-3 font-mono">{proc.processId}</td>
                             <td className="px-4 py-3">{proc.arrivalTime}</td>
                             <td className="px-4 py-3">{proc.burstTime}</td>
+                            {selectedAlgo === 'NP-PS' || selectedAlgo === 'P-PS' ? (
+                              <td className="px-4 py-3">{proc.priority}</td>
+                            ) : null}
                             <td className="px-4 py-3 text-right">
                               <button 
                                 onClick={() => handleRemoveProcess(index)}
