@@ -20,8 +20,8 @@ export default function HomePage() {
     { value: 'RR', name: 'Round Robin (RR)' },
     { value: 'NP-SJF', name: 'Non-Primitive Shortest Job First(NP-SJF)' },
     { value: 'P-SJF', name: 'Primitive Shortest Job First(P-SJF)' },
-    { value: 'NP-PS', name: 'Priority (Non-Primitive)' },
-    { value: 'P-PS', name: 'Priority (Primitive)' }
+    { value: 'NP-PS', name: 'Priority (Non-Primitive)' }
+    // { value: 'P-PS', name: 'Priority (Primitive)' }
   ];
 
   const handleAddProcess = () => {
